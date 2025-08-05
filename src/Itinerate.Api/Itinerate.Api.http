@@ -1,0 +1,6 @@
+@Itinerate.Api_HostAddress = http://localhost:5039
+
+GET {{Itinerate.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
