@@ -1,4 +1,6 @@
-﻿public class Itinerary
+﻿namespace Itinerate.Domain;
+
+public class Itinerary
 {
     public Guid Id { get; set; } // Using Guid for unique, non-sequential IDs
     public string Name { get; set; } = string.Empty;

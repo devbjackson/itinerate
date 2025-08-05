@@ -1,3 +1,5 @@
+namespace Itinerate.Domain;
+
 public class Day
 {
     public Guid Id { get; set; }

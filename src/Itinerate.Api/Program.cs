@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Itinerate.Infrastructure;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Itinerate.Domain;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,5 +23,23 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// 1. Define a group for our itinerary endpoints for better organization
+var itineraryApi = app.MapGroup("/api/itineraries");
+
+// 2. Define the GET endpoint to retrieve all itineraries
+itineraryApi.MapGet("/", async (ApplicationDbContext db) =>
+{
+    var itineraries = await db.Itineraries.ToListAsync();
+    return TypedResults.Ok(itineraries);
+});
+
+// 3. Define the POST endpoint to create a new itinerary
+// NOTE: We are using the 'Itinerary' class from ApplicationDbContext.cs for this
+itineraryApi.MapPost("/", async (Itinerary itinerary, ApplicationDbContext db) =>
+{
+    db.Itineraries.Add(itinerary);
+    await db.SaveChangesAsync();
+    return TypedResults.Created($"/api/itineraries/{itinerary.Id}", itinerary);
+});
 
 app.Run();
