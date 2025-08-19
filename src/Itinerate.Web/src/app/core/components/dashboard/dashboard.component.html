@@ -1,0 +1,21 @@
+<section class="section">
+  <h1 class="title">My Itineraries</h1>
+
+  <div *ngIf="itineraries$ | async as itineraries; else loading">
+    <div *ngIf="itineraries.length > 0; else noItineraries" class="box">
+      <ul>
+        <li *ngFor="let itinerary of itineraries">
+          <strong>{{ itinerary.name }}</strong> - {{ itinerary.destination }}
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <ng-template #loading>
+    <p>Loading itineraries...</p>
+  </ng-template>
+
+  <ng-template #noItineraries>
+    <p>No itineraries found. Create one!</p>
+  </ng-template>
+</section>

@@ -1,12 +1,29 @@
 using Microsoft.EntityFrameworkCore;
 using Itinerate.Infrastructure;
 using Microsoft.AspNetCore.Http.HttpResults;
+using System.Text.Json.Serialization;
 using Itinerate.Domain;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+                      policy =>
+                      {
+                          policy.WithOrigins("http://localhost:4200") 
+                                .AllowAnyHeader()
+                                .AllowAnyMethod();
+                      });
+});
+
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.ConfigureHttpJsonOptions(options =>
+{
+    options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -19,6 +36,7 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 app.UseHttpsRedirection();
+app.UseCors(MyAllowSpecificOrigins); 
 
 // 1. Define a group for our itinerary endpoints for better organization
 var itineraryApi = app.MapGroup("/api/itineraries");
